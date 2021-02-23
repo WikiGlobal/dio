@@ -914,7 +914,8 @@ abstract class DioMixin implements Dio {
   }
 
   // Initiate Http requests
-  Future<Response<T>> _dispatchRequest<T>(RequestOptions options) async {
+  // Future<Response<T>> _dispatchRequest<T>(RequestOptions options) async {
+  FutureOr _dispatchRequest<T>(RequestOptions options) async {
     var cancelToken = options.cancelToken;
     ResponseBody responseBody;
     try {
@@ -954,7 +955,13 @@ abstract class DioMixin implements Dio {
       }
       checkCancelled(cancelToken);
       if (statusOk) {
-        return checkIfNeedEnqueue(interceptors.responseLock, () => ret);
+        //猜想这边检查锁直接让response不进入interceptor.onResponse方法,但是返回类型有问题
+        var value = checkIfNeedEnqueue(interceptors.responseLock, () => ret);
+        // if (value is Future<dynamic>) {
+        //   print('Future<dynamic>');
+        //   return value as Future<Response<T>>;
+        // }
+        return value;
       } else {
         throw DioError(
           response: ret,
