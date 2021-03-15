@@ -617,7 +617,8 @@ abstract class DioMixin implements Dio {
   }
 
   // Initiate Http requests
-  Future<Response<T>> _dispatchRequest<T>(RequestOptions reqOpt) async {
+  // Future<Response<T>> _dispatchRequest<T>(RequestOptions reqOpt) async {
+  FutureOr _dispatchRequest<T>(RequestOptions reqOpt) async {
     var cancelToken = reqOpt.cancelToken;
     ResponseBody responseBody;
     try {
@@ -657,8 +658,9 @@ abstract class DioMixin implements Dio {
       }
       checkCancelled(cancelToken);
       if (statusOk) {
-        return checkIfNeedEnqueue(interceptors.responseLock, () => ret)
-            as Response<T>;
+        // return checkIfNeedEnqueue(interceptors.responseLock, () => ret)
+        //     as Response<T>;
+        return checkIfNeedEnqueue(interceptors.responseLock, () => ret);
       } else {
         throw DioError(
           response: ret,
